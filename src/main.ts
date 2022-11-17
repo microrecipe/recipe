@@ -7,8 +7,10 @@ async function bootstrap() {
 
   const app = await NestFactory.create(AppModule);
 
-  await app.listen(3011);
+  await app.listen(process.env.RECIPE_REST_PORT);
 
-  logger.warn(`recipes app running on port: ${3011}`);
+  logger.verbose(
+    `recipes app running on port: ${process.env.RECIPE_REST_PORT}`,
+  );
 }
 bootstrap();
