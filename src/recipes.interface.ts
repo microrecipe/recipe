@@ -24,5 +24,5 @@ export interface Nutrition {
 }
 
 export interface IngridientsService {
-  getIngridientById(ingridient: Ingridient): Observable<Ingridient>;
+  listIngridientsByRecipeId(recipe: Recipe): Observable<Ingridient[]>;
 }

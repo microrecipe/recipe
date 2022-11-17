@@ -9,14 +9,7 @@ const Recipes: Recipe[] = [
   {
     id: 1,
     name: 'Fried chicken',
-    ingridients: [
-      {
-        id: 1,
-      },
-      {
-        id: 2,
-      },
-    ],
+    ingridients: null,
   },
 ];
 
@@ -41,19 +34,13 @@ export class AppService implements OnModuleInit {
       throw new NotFoundException('Recipe not found');
     }
 
-    const ingridients = [];
-
-    for (let i = 0; i < _recipe.ingridients.length; i++) {
-      await this.ingridientsService
-        .getIngridientById({
-          id: _recipe.ingridients[i].id,
-        })
-        .forEach((value) => {
-          ingridients.push(value);
-        });
-    }
-
-    _recipe.ingridients = ingridients;
+    await this.ingridientsService
+      .listIngridientsByRecipeId({
+        id: _recipe.id,
+      })
+      .forEach((value) => {
+        _recipe.ingridients = value;
+      });
 
     return _recipe;
   }
