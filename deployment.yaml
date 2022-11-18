@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: recipe
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: microrecipe
+      service: recipe
+  template:
+    metadata:
+      labels:
+        app: microrecipe
+        service: recipe
+        sidecar.istio.io/inject: "true"
+        version: "1"
+    spec:
+      containers:
+        - name: recipe
+          image: eristemena/microrecipe_recipe
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          ports:
+            - name: recipe
+              protocol: TCP
+              containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: microrecipe-config
