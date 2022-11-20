@@ -6,7 +6,7 @@ import { AppService } from './app.service';
 export class AppController {
   constructor(private readonly service: AppService) {}
 
-  @Get('recipe/:id')
+  @Get('recipes/:id')
   async getRecipeById(@Param('id') id: number) {
     return await this.service.getRecipeById({
       id,
