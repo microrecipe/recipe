@@ -8,8 +8,21 @@ export class AppController {
 
   @Get('recipes/:id')
   async getRecipeById(@Param('id') id: number) {
-    return await this.service.getRecipeById({
-      id,
-    });
+    return await this.service.getRecipeById(
+      {
+        id,
+      },
+      'GRPC',
+    );
+  }
+
+  @Get('recipes/tcp/:id')
+  async _getRecipeById(@Param('id') id: number) {
+    return await this.service.getRecipeById(
+      {
+        id,
+      },
+      'TCP',
+    );
   }
 }

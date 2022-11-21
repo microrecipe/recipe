@@ -5,6 +5,7 @@ import { Transport } from '@nestjs/microservices/enums';
 import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { ClientPackageNames } from './package-names.enum';
 
 @Module({
   imports: [
@@ -13,12 +14,20 @@ import { AppService } from './app.service';
     }),
     ClientsModule.register([
       {
-        name: 'INGRIDIENTS_PACKAGE',
+        name: ClientPackageNames.ingridientGRPC,
         transport: Transport.GRPC,
         options: {
           package: 'ingridients',
           protoPath: join(__dirname, '../src/ingridients.proto'),
           url: `${process.env.INGRIDIENT_HOST}:${process.env.INGRIDIENT_GRPC_PORT}`,
+        },
+      },
+      {
+        name: ClientPackageNames.ingridientTCP,
+        transport: Transport.TCP,
+        options: {
+          host: process.env.INGRIDIENT_HOST,
+          port: Number(process.env.INGRIDIENT_TCP_PORT),
         },
       },
     ]),

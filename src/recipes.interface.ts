@@ -23,6 +23,10 @@ export interface Nutrition {
   protein?: string;
 }
 
+export interface IngridientsList {
+  ingridients: Ingridient[];
+}
+
 export interface IngridientsService {
   listIngridientsByRecipeId(recipe: Recipe): Observable<Ingridient[]>;
 }
