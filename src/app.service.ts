@@ -29,13 +29,11 @@ export class AppService implements OnModuleInit {
     private ingridientTcpClient: ClientProxy,
   ) {}
 
-  async onModuleInit() {
+  onModuleInit() {
     this.ingridientsService =
       this.ingridientGrpcClient.getService<IngridientsService>(
         'IngridientsService',
       );
-
-    await this.ingridientTcpClient.connect();
   }
 
   async getRecipeById(
