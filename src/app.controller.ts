@@ -1,28 +1,24 @@
-import { Get, Param } from '@nestjs/common';
+import { Body, Get, Param, Post } from '@nestjs/common';
 import { Controller } from '@nestjs/common';
 import { AppService } from './app.service';
+import { AddRecipeBody, RecipesDTO } from './recipes.dto';
 
 @Controller()
 export class AppController {
   constructor(private readonly service: AppService) {}
 
-  @Get('recipes/:id')
-  async getRecipeById(@Param('id') id: number) {
-    return await this.service.getRecipeById(
-      {
-        id,
-      },
-      'GRPC',
-    );
+  @Get('recipes')
+  async listRecipes(): Promise<RecipesDTO[]> {
+    return await this.service.listRecipes();
   }
 
-  @Get('recipes/tcp/:id')
-  async _getRecipeById(@Param('id') id: number) {
-    return await this.service.getRecipeById(
-      {
-        id,
-      },
-      'TCP',
-    );
+  @Post('recipes')
+  async addRecipe(@Body() body: AddRecipeBody): Promise<RecipesDTO> {
+    return await this.service.addRecipe(body);
+  }
+
+  @Get('recipes/:id')
+  async getRecipeById(@Param('id') id: number): Promise<RecipesDTO> {
+    return await this.service.getRecipeById(id);
   }
 }

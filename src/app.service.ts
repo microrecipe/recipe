@@ -1,22 +1,18 @@
-import { OnModuleInit } from '@nestjs/common';
+import { NotFoundException, OnModuleInit } from '@nestjs/common';
 import { Injectable } from '@nestjs/common';
 import { Inject } from '@nestjs/common/decorators/core/inject.decorator';
-import { NotFoundException } from '@nestjs/common/exceptions/not-found.exception';
 import { ClientGrpc, ClientProxy } from '@nestjs/microservices';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { ClientPackageNames } from './package-names.enum';
+import { Recipe } from './recipe.entity';
+import { RecipesDTO } from './recipes.dto';
 import {
-  IngridientsList,
+  AddRecipeData,
+  IIngridient,
   IngridientsService,
-  Recipe,
+  IRecipe,
 } from './recipes.interface';
-
-const Recipes: Recipe[] = [
-  {
-    id: 1,
-    name: 'Fried chicken',
-    ingridients: null,
-  },
-];
 
 @Injectable()
 export class AppService implements OnModuleInit {
@@ -27,6 +23,8 @@ export class AppService implements OnModuleInit {
     private ingridientGrpcClient: ClientGrpc,
     @Inject(ClientPackageNames.ingridientTCP)
     private ingridientTcpClient: ClientProxy,
+    @InjectRepository(Recipe)
+    private recipesRepository: Repository<Recipe>,
   ) {}
 
   onModuleInit() {
@@ -36,41 +34,84 @@ export class AppService implements OnModuleInit {
       );
   }
 
-  async getRecipeById(
-    recipe: Recipe,
-    transportMethod?: 'GRPC' | 'TCP',
-  ): Promise<Recipe> {
-    const _recipe = Recipes.find((rcp) => rcp.id == recipe.id);
+  async addRecipe(data: AddRecipeData): Promise<RecipesDTO> {
+    for (const ing of data.ingridients) {
+      await this.ingridientsService
+        .getIngridientById({
+          id: ing.id,
+        })
+        .forEach((val) => {
+          if (!val) {
+            throw new NotFoundException('Ingridient not found');
+          }
+        });
+    }
 
-    if (!_recipe) {
+    const recipe = this.recipesRepository.create({
+      name: data.name,
+    });
+
+    await this.recipesRepository.save(recipe);
+
+    const ingridients: IIngridient[] = [];
+
+    for (const ing of data.ingridients) {
+      await this.ingridientsService
+        .setIngridientToRecipe({
+          id: ing.id,
+          portion: ing.portion,
+          recipeId: recipe.id,
+        })
+        .forEach((val) => {
+          ingridients.push(val);
+        });
+    }
+
+    return RecipesDTO.toDTO({ ...recipe, ingridients });
+  }
+
+  async listRecipes() {
+    const recipes = await this.recipesRepository.find();
+
+    const recipesList: IRecipe[] = [];
+
+    for (const recipe of recipes) {
+      await this.ingridientsService
+        .listIngridientsByRecipeId({
+          id: recipe.id,
+        })
+        .forEach((val) => {
+          recipesList.push({ ...recipe, ingridients: val.ingridients });
+        });
+    }
+
+    return recipesList.map((recipe) => RecipesDTO.toDTO(recipe));
+  }
+
+  async getRecipeById(id: number): Promise<RecipesDTO> {
+    const recipe = await this.recipesRepository.findOne({
+      where: {
+        id,
+      },
+    });
+
+    if (!recipe) {
       throw new NotFoundException('Recipe not found');
     }
 
-    switch (transportMethod) {
-      case 'GRPC': {
-        await this.ingridientsService
-          .listIngridientsByRecipeId({
-            id: _recipe.id,
-          })
-          .forEach((value) => {
-            _recipe.ingridients = value;
-          });
-        break;
-      }
-      case 'TCP': {
-        await this.ingridientTcpClient
-          .send<IngridientsList, Recipe>('listIngridients', {
-            id: _recipe.id,
-          })
-          .forEach((value) => {
-            _recipe.ingridients = value.ingridients;
-          });
-        break;
-      }
-      default:
-        break;
-    }
+    let ingridients;
 
-    return _recipe;
+    await this.ingridientsService
+      .listIngridientsByRecipeId({
+        id: recipe.id,
+      })
+      .forEach((val) => {
+        ingridients = val.ingridients;
+      });
+
+    return RecipesDTO.toDTO({
+      ...recipe,
+      ingridients,
+    });
   }
 }

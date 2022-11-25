@@ -1,11 +1,13 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientsModule } from '@nestjs/microservices';
 import { Transport } from '@nestjs/microservices/enums';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ClientPackageNames } from './package-names.enum';
+import { Recipe } from './recipe.entity';
 
 @Module({
   imports: [
@@ -31,6 +33,23 @@ import { ClientPackageNames } from './package-names.enum';
         },
       },
     ]),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        type: 'postgres',
+        host: configService.get('RECIPE_DB_HOST'),
+        port: Number(configService.get('RECIPE_DB_PORT')),
+        username: configService.get('RECIPE_DB_USERNAME'),
+        password: configService.get('RECIPE_DB_PASSWORD'),
+        database: configService.get('RECIPE_DB_NAME'),
+        entities: [__dirname + './*.entity{.ts,.js}'],
+        autoLoadEntities: true,
+        synchronize: true,
+        logging: false,
+      }),
+      inject: [ConfigService],
+    }),
+    TypeOrmModule.forFeature([Recipe]),
   ],
   controllers: [AppController],
   providers: [AppService],
