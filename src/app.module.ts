@@ -32,6 +32,16 @@ import { Recipe } from './recipe.entity';
           port: Number(process.env.INGRIDIENT_TCP_PORT),
         },
       },
+      {
+        name: ClientPackageNames.recipeDeleteTopic,
+        transport: Transport.KAFKA,
+        options: {
+          client: {
+            clientId: 'recipe',
+            brokers: ['broker:29092'],
+          },
+        },
+      },
     ]),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],

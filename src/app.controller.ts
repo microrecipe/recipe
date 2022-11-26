@@ -1,4 +1,4 @@
-import { Body, Get, Param, Post } from '@nestjs/common';
+import { Body, Delete, Get, Param, Post } from '@nestjs/common';
 import { Controller } from '@nestjs/common';
 import { AppService } from './app.service';
 import { AddRecipeBody, RecipesDTO } from './recipes.dto';
@@ -20,5 +20,10 @@ export class AppController {
   @Get('recipes/:id')
   async getRecipeById(@Param('id') id: number): Promise<RecipesDTO> {
     return await this.service.getRecipeById(id);
+  }
+
+  @Delete('recipes/:id')
+  async deleteRecipe(@Param('id') id: number): Promise<string> {
+    return await this.service.deleteRecipe(id);
   }
 }

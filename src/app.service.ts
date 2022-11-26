@@ -1,7 +1,8 @@
 import { NotFoundException, OnModuleInit } from '@nestjs/common';
 import { Injectable } from '@nestjs/common';
 import { Inject } from '@nestjs/common/decorators/core/inject.decorator';
-import { ClientGrpc, ClientProxy } from '@nestjs/microservices';
+import { Logger } from '@nestjs/common/services';
+import { ClientGrpc, ClientKafka, ClientProxy } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ClientPackageNames } from './package-names.enum';
@@ -17,12 +18,15 @@ import {
 @Injectable()
 export class AppService implements OnModuleInit {
   private ingridientsService: IngridientsService;
+  private logger = new Logger('RecipesService');
 
   constructor(
     @Inject(ClientPackageNames.ingridientGRPC)
     private ingridientGrpcClient: ClientGrpc,
     @Inject(ClientPackageNames.ingridientTCP)
     private ingridientTcpClient: ClientProxy,
+    @Inject(ClientPackageNames.recipeDeleteTopic)
+    private recipeDeleteKafka: ClientKafka,
     @InjectRepository(Recipe)
     private recipesRepository: Repository<Recipe>,
   ) {}
@@ -113,5 +117,27 @@ export class AppService implements OnModuleInit {
       ...recipe,
       ingridients,
     });
+  }
+
+  async deleteRecipe(id: number): Promise<string> {
+    const recipe = await this.recipesRepository.findOne({
+      where: {
+        id,
+      },
+    });
+
+    if (!recipe) {
+      throw new NotFoundException('Recipe not found');
+    }
+
+    await this.recipesRepository.remove(recipe);
+
+    this.recipeDeleteKafka
+      .emit('recipe.deleted', { recipe_id: id })
+      .forEach(() => {
+        this.logger.log('recipe.deleted emit');
+      });
+
+    return 'Recipe deleted';
   }
 }
