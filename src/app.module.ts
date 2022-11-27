@@ -37,8 +37,8 @@ import { Recipe } from './recipe.entity';
         transport: Transport.KAFKA,
         options: {
           client: {
-            clientId: 'recipe',
-            brokers: ['broker:29092'],
+            clientId: 'microrecipe',
+            brokers: process.env.KAFKA_BROKERS.split(','),
           },
         },
       },
