@@ -13,6 +13,7 @@ import {
   IIngridient,
   IngridientsService,
   IRecipe,
+  UserType,
 } from './recipes.interface';
 
 @Injectable()
@@ -38,7 +39,7 @@ export class AppService implements OnModuleInit {
       );
   }
 
-  async addRecipe(data: AddRecipeData): Promise<RecipesDTO> {
+  async addRecipe(data: AddRecipeData, user: UserType): Promise<RecipesDTO> {
     for (const ing of data.ingridients) {
       await this.ingridientsService
         .getIngridientById({
@@ -51,11 +52,12 @@ export class AppService implements OnModuleInit {
         });
     }
 
-    const recipe = this.recipesRepository.create({
-      name: data.name,
-    });
-
-    await this.recipesRepository.save(recipe);
+    const recipe = await this.recipesRepository.save(
+      this.recipesRepository.create({
+        name: data.name,
+        userId: user.id,
+      }),
+    );
 
     const ingridients: IIngridient[] = [];
 
@@ -63,7 +65,7 @@ export class AppService implements OnModuleInit {
       await this.ingridientsService
         .setIngridientToRecipe({
           id: ing.id,
-          portion: ing.portion,
+          quantity: ing.quantity,
           recipeId: recipe.id,
         })
         .forEach((val) => {

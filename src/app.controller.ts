@@ -1,7 +1,10 @@
-import { Body, Delete, Get, Param, Post } from '@nestjs/common';
+import { Body, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { Controller } from '@nestjs/common';
 import { AppService } from './app.service';
+import { UserPayload } from './auth.decorator';
+import { JwtAuthGuard } from './auth.guard';
 import { AddRecipeBody, RecipesDTO } from './recipes.dto';
+import { TokenPayload } from './recipes.interface';
 
 @Controller()
 export class AppController {
@@ -13,8 +16,12 @@ export class AppController {
   }
 
   @Post('recipes')
-  async addRecipe(@Body() body: AddRecipeBody): Promise<RecipesDTO> {
-    return await this.service.addRecipe(body);
+  @UseGuards(JwtAuthGuard)
+  async addRecipe(
+    @Body() body: AddRecipeBody,
+    @UserPayload() user: TokenPayload,
+  ): Promise<RecipesDTO> {
+    return await this.service.addRecipe(body, user);
   }
 
   @Get('recipes/:id')
@@ -23,6 +30,7 @@ export class AppController {
   }
 
   @Delete('recipes/:id')
+  @UseGuards(JwtAuthGuard)
   async deleteRecipe(@Param('id') id: number): Promise<string> {
     return await this.service.deleteRecipe(id);
   }

@@ -2,7 +2,7 @@ import { INutrition, IIngridient, IRecipe } from './recipes.interface';
 
 export class IngridientsBody {
   id: number;
-  portion: string;
+  quantity: number;
 }
 
 export class AddRecipeBody {
@@ -32,7 +32,8 @@ export class IngridientsDTO {
 
     res.id = ingridient.id;
     res.name = ingridient.name;
-    res.portion = ingridient.portion;
+    res.quantity = ingridient.quantity;
+    res.unit = ingridient.unit;
     res.nutritions = ingridient.nutritions
       ? ingridient.nutritions.map((nutrition) => NutritionsDTO.toDTO(nutrition))
       : [];
@@ -42,7 +43,8 @@ export class IngridientsDTO {
 
   id: number;
   name: string;
-  portion: string;
+  quantity: number;
+  unit: string;
   nutritions: NutritionsDTO[];
 }
 

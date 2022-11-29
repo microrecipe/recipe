@@ -1,11 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
 import { ClientsModule } from '@nestjs/microservices';
 import { Transport } from '@nestjs/microservices/enums';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { JwtStrategy } from './jwt.strategy';
 import { ClientPackageNames } from './package-names.enum';
 import { Recipe } from './recipe.entity';
 
@@ -60,8 +62,9 @@ import { Recipe } from './recipe.entity';
       inject: [ConfigService],
     }),
     TypeOrmModule.forFeature([Recipe]),
+    JwtModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, JwtStrategy],
 })
 export class AppModule {}

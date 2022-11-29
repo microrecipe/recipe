@@ -10,9 +10,10 @@ export interface INutrition {
 export interface IIngridient {
   id?: number;
   name?: string;
-  portion?: string;
-  recipeId?: number;
+  quantity?: number;
+  unit?: string;
   nutritions?: INutrition[];
+  recipeId?: number;
 }
 
 export interface IRecipe {
@@ -23,7 +24,7 @@ export interface IRecipe {
 
 export interface IngridientsData {
   id: number;
-  portion: string;
+  quantity: number;
 }
 
 export interface AddRecipeData {
@@ -37,14 +38,15 @@ export interface IngridientId {
 
 export interface SetIngridient {
   id: number;
-  portion: string;
+  quantity: number;
   recipeId: number;
 }
 
 export interface SetIngridientRes {
   id: number;
   name: string;
-  portion: string;
+  quantity: number;
+  unit: string;
   nutritions: INutrition[];
 }
 
@@ -65,3 +67,11 @@ export interface IngridientsService {
 
   listIngridientsByRecipeId(recipeId: RecipeId): Observable<ListIngridientsRes>;
 }
+
+export interface TokenPayload {
+  id: number;
+  name: string;
+  email: string;
+}
+
+export type UserType = TokenPayload;
