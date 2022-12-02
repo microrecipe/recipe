@@ -18,20 +18,20 @@ import { Recipe } from './recipe.entity';
     }),
     ClientsModule.register([
       {
-        name: ClientPackageNames.ingridientGRPC,
+        name: ClientPackageNames.ingredientGRPC,
         transport: Transport.GRPC,
         options: {
-          package: 'ingridients',
-          protoPath: join(__dirname, '../src/ingridients.proto'),
-          url: `${process.env.INGRIDIENT_HOST}:${process.env.INGRIDIENT_GRPC_PORT}`,
+          package: 'ingredients',
+          protoPath: join(__dirname, '../src/ingredients.proto'),
+          url: `${process.env.INGREDIENT_HOST}:${process.env.INGREDIENT_GRPC_PORT}`,
         },
       },
       {
-        name: ClientPackageNames.ingridientTCP,
+        name: ClientPackageNames.ingredientTCP,
         transport: Transport.TCP,
         options: {
-          host: process.env.INGRIDIENT_HOST,
-          port: Number(process.env.INGRIDIENT_TCP_PORT),
+          host: process.env.INGREDIENT_HOST,
+          port: Number(process.env.INGREDIENT_TCP_PORT),
         },
       },
       {

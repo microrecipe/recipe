@@ -10,22 +10,22 @@ import { Recipe } from './recipe.entity';
 import { RecipesDTO } from './recipes.dto';
 import {
   AddRecipeData,
-  IIngridient,
-  IngridientsService,
+  IIngredient,
+  IngredientsService as IngredientsService,
   IRecipe,
   UserType,
 } from './recipes.interface';
 
 @Injectable()
 export class AppService implements OnModuleInit {
-  private ingridientsService: IngridientsService;
+  private ingredientsService: IngredientsService;
   private logger = new Logger('RecipesService');
 
   constructor(
-    @Inject(ClientPackageNames.ingridientGRPC)
-    private ingridientGrpcClient: ClientGrpc,
-    @Inject(ClientPackageNames.ingridientTCP)
-    private ingridientTcpClient: ClientProxy,
+    @Inject(ClientPackageNames.ingredientGRPC)
+    private ingredientGrpcClient: ClientGrpc,
+    @Inject(ClientPackageNames.ingredientTCP)
+    private ingredientTcpClient: ClientProxy,
     @Inject(ClientPackageNames.recipeDeleteTopic)
     private recipeDeleteKafka: ClientKafka,
     @InjectRepository(Recipe)
@@ -33,21 +33,21 @@ export class AppService implements OnModuleInit {
   ) {}
 
   onModuleInit() {
-    this.ingridientsService =
-      this.ingridientGrpcClient.getService<IngridientsService>(
-        'IngridientsService',
+    this.ingredientsService =
+      this.ingredientGrpcClient.getService<IngredientsService>(
+        'IngredientsService',
       );
   }
 
   async addRecipe(data: AddRecipeData, user: UserType): Promise<RecipesDTO> {
-    for (const ing of data.ingridients) {
-      await this.ingridientsService
-        .getIngridientById({
+    for (const ing of data.ingredients) {
+      await this.ingredientsService
+        .getIngredientById({
           id: ing.id,
         })
         .forEach((val) => {
           if (!val) {
-            throw new NotFoundException('Ingridient not found');
+            throw new NotFoundException('ingredient not found');
           }
         });
     }
@@ -59,21 +59,21 @@ export class AppService implements OnModuleInit {
       }),
     );
 
-    const ingridients: IIngridient[] = [];
+    const ingredients: IIngredient[] = [];
 
-    for (const ing of data.ingridients) {
-      await this.ingridientsService
-        .setIngridientToRecipe({
+    for (const ing of data.ingredients) {
+      await this.ingredientsService
+        .setIngredientToRecipe({
           id: ing.id,
           quantity: ing.quantity,
           recipeId: recipe.id,
         })
         .forEach((val) => {
-          ingridients.push(val);
+          ingredients.push(val);
         });
     }
 
-    return RecipesDTO.toDTO({ ...recipe, ingridients });
+    return RecipesDTO.toDTO({ ...recipe, ingredients: ingredients });
   }
 
   async listRecipes() {
@@ -82,12 +82,12 @@ export class AppService implements OnModuleInit {
     const recipesList: IRecipe[] = [];
 
     for (const recipe of recipes) {
-      await this.ingridientsService
-        .listIngridientsByRecipeId({
+      await this.ingredientsService
+        .listIngredientsByRecipeId({
           id: recipe.id,
         })
         .forEach((val) => {
-          recipesList.push({ ...recipe, ingridients: val.ingridients });
+          recipesList.push({ ...recipe, ingredients: val.ingredients });
         });
     }
 
@@ -105,19 +105,19 @@ export class AppService implements OnModuleInit {
       throw new NotFoundException('Recipe not found');
     }
 
-    let ingridients;
+    let ingredients;
 
-    await this.ingridientsService
-      .listIngridientsByRecipeId({
+    await this.ingredientsService
+      .listIngredientsByRecipeId({
         id: recipe.id,
       })
       .forEach((val) => {
-        ingridients = val.ingridients;
+        ingredients = val.ingredients;
       });
 
     return RecipesDTO.toDTO({
       ...recipe,
-      ingridients,
+      ingredients: ingredients,
     });
   }
 

@@ -4,10 +4,10 @@ export interface INutrition {
   id?: number;
   name?: string;
   perGram?: string;
-  ingridientId?: number;
+  ingredientId?: number;
 }
 
-export interface IIngridient {
+export interface IIngredient {
   id?: number;
   name?: string;
   quantity?: number;
@@ -19,30 +19,30 @@ export interface IIngridient {
 export interface IRecipe {
   id?: number;
   name?: string;
-  ingridients?: IIngridient[];
+  ingredients?: IIngredient[];
 }
 
-export interface IngridientsData {
+export interface IngredientsData {
   id: number;
   quantity: number;
 }
 
 export interface AddRecipeData {
   name: string;
-  ingridients: IngridientsData[];
+  ingredients: IngredientsData[];
 }
 
-export interface IngridientId {
+export interface IngredientId {
   id: number;
 }
 
-export interface SetIngridient {
+export interface SetIngredient {
   id: number;
   quantity: number;
   recipeId: number;
 }
 
-export interface SetIngridientRes {
+export interface SetIngredientRes {
   id: number;
   name: string;
   quantity: number;
@@ -54,18 +54,18 @@ export interface RecipeId {
   id: number;
 }
 
-export interface ListIngridientsRes {
-  ingridients: IIngridient[];
+export interface ListIngredientsRes {
+  ingredients: IIngredient[];
 }
 
-export interface IngridientsService {
-  setIngridientToRecipe(
-    setIngridient: SetIngridient,
-  ): Observable<SetIngridientRes>;
+export interface IngredientsService {
+  setIngredientToRecipe(
+    setIngredient: SetIngredient,
+  ): Observable<SetIngredientRes>;
 
-  getIngridientById(ingridientId: IngridientId): Observable<IIngridient>;
+  getIngredientById(ingredientId: IngredientId): Observable<IIngredient>;
 
-  listIngridientsByRecipeId(recipeId: RecipeId): Observable<ListIngridientsRes>;
+  listIngredientsByRecipeId(recipeId: RecipeId): Observable<ListIngredientsRes>;
 }
 
 export interface TokenPayload {
