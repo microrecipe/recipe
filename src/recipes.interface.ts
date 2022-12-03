@@ -68,10 +68,12 @@ export interface IngredientsService {
   listIngredientsByRecipeId(recipeId: RecipeId): Observable<ListIngredientsRes>;
 }
 
-export interface TokenPayload {
+export interface UserType {
   id: number;
   name: string;
   email: string;
 }
 
-export type UserType = TokenPayload;
+export interface RecipeId {
+  id: number;
+}

@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 import { UserPayload } from './auth/auth.decorator';
 import { JwtAuthGuard } from './auth/auth.guard';
 import { AddRecipeBody, RecipesDTO } from './recipes.dto';
-import { TokenPayload } from './recipes.interface';
+import { UserType } from './recipes.interface';
 
 @Controller('recipes')
 export class AppController {
@@ -19,7 +19,7 @@ export class AppController {
   @UseGuards(JwtAuthGuard)
   async addRecipe(
     @Body() body: AddRecipeBody,
-    @UserPayload() user: TokenPayload,
+    @UserPayload() user: UserType,
   ): Promise<RecipesDTO> {
     return await this.service.addRecipe(body, user);
   }
