@@ -7,7 +7,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { JwtStrategy } from './jwt.strategy';
+import { JwtStrategy } from './auth/jwt.strategy';
+import { GrpcController } from './grpc.controller';
+import { GrpcService } from './grpc.service';
 import { ClientPackageNames } from './package-names.enum';
 import { Recipe } from './recipe.entity';
 
@@ -22,7 +24,7 @@ import { Recipe } from './recipe.entity';
         transport: Transport.GRPC,
         options: {
           package: 'ingredients',
-          protoPath: join(__dirname, '../src/ingredients.proto'),
+          protoPath: join(__dirname, '../src/proto/ingredients.proto'),
           url: `${process.env.INGREDIENT_HOST}:${process.env.INGREDIENT_GRPC_PORT}`,
         },
       },
@@ -64,7 +66,7 @@ import { Recipe } from './recipe.entity';
     TypeOrmModule.forFeature([Recipe]),
     JwtModule,
   ],
-  controllers: [AppController],
-  providers: [AppService, JwtStrategy],
+  controllers: [AppController, GrpcController],
+  providers: [AppService, JwtStrategy, GrpcService],
 })
 export class AppModule {}
