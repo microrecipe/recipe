@@ -54,7 +54,7 @@ export class RecipesDTO {
 
     res.id = recipe.id;
     res.name = recipe.name;
-    res.ingredients = recipe.ingredients.map((ingredient) =>
+    res.ingredients = recipe.ingredients?.map((ingredient) =>
       IngredientsDTO.toDTO(ingredient),
     );
 
