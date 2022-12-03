@@ -76,7 +76,7 @@ export class AppService implements OnModuleInit {
     return RecipesDTO.toDTO({ ...recipe, ingredients: ingredients });
   }
 
-  async listRecipes() {
+  async listRecipes(): Promise<RecipesDTO[]> {
     const recipes = await this.recipesRepository.find();
 
     const recipesList: IRecipe[] = [];
