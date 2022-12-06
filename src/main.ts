@@ -34,9 +34,9 @@ async function bootstrap() {
     },
   });
 
-  app.startAllMicroservices().then(() => {
-    logger.log(`gRPC service running on port: ${process.env.RECIPE_GRPC_PORT}`);
-  });
+  await app.startAllMicroservices();
+
+  logger.log(`gRPC service running on port: ${process.env.RECIPE_GRPC_PORT}`);
 
   await app.listen(process.env.RECIPE_REST_PORT);
 

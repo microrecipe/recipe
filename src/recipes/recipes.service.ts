@@ -105,7 +105,7 @@ export class RecipesService implements OnModuleInit {
       throw new NotFoundException('Recipe not found');
     }
 
-    let ingredients;
+    let ingredients: IIngredient[];
 
     await this.ingredientsService
       .listIngredientsByRecipeId({
@@ -132,7 +132,7 @@ export class RecipesService implements OnModuleInit {
       throw new NotFoundException('Recipe not found');
     }
 
-    await this.recipesRepository.remove(recipe);
+    await this.recipesRepository.softRemove(recipe);
 
     this.recipeDeleteKafka
       .emit('recipe.deleted', { recipe_id: id })
