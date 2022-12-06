@@ -1,14 +1,14 @@
 import { Body, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { Controller } from '@nestjs/common';
-import { AppService } from './app.service';
-import { UserPayload } from './auth/auth.decorator';
-import { JwtAuthGuard } from './auth/auth.guard';
-import { AddRecipeBody, RecipesDTO } from './recipes.dto';
-import { UserType } from './recipes.interface';
+import { RecipesService } from './recipes.service';
+import { UserPayload } from '../auth/auth.decorator';
+import { JwtAuthGuard } from '../auth/auth.guard';
+import { AddRecipeBody, RecipesDTO } from '../recipes.dto';
+import { UserType } from '../recipes.interface';
 
 @Controller('recipes')
-export class AppController {
-  constructor(private readonly service: AppService) {}
+export class RecipesController {
+  constructor(private readonly service: RecipesService) {}
 
   @Get()
   async listRecipes(): Promise<RecipesDTO[]> {

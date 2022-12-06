@@ -1,11 +1,11 @@
 import { Controller } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
-import { GrpcService } from './grpc.service';
-import { RecipeId, IRecipe } from './recipes.interface';
+import { RecipeId, IRecipe } from '../recipes.interface';
+import { RecipesGrpcService } from './recipes-grpc.service';
 
 @Controller()
-export class GrpcController {
-  constructor(private readonly service: GrpcService) {}
+export class RecipesGrpcController {
+  constructor(private readonly service: RecipesGrpcService) {}
 
   @GrpcMethod('RecipesService')
   async getRecipeById(data: RecipeId): Promise<IRecipe> {

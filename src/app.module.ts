@@ -5,13 +5,13 @@ import { ClientsModule } from '@nestjs/microservices';
 import { Transport } from '@nestjs/microservices/enums';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { RecipesController } from './recipes/recipes.controller';
 import { JwtStrategy } from './auth/jwt.strategy';
-import { GrpcController } from './grpc.controller';
-import { GrpcService } from './grpc.service';
-import { ClientPackageNames } from './package-names.enum';
-import { Recipe } from './recipe.entity';
+import { ClientPackageNames } from './recipes.enum';
+import { Recipe } from './entities/recipe.entity';
+import { RecipesGrpcController } from './recipes/recipes-grpc.controller';
+import { RecipesService } from './recipes/recipes.service';
+import { RecipesGrpcService } from './recipes/recipes-grpc.service';
 
 @Module({
   imports: [
@@ -56,7 +56,7 @@ import { Recipe } from './recipe.entity';
         username: configService.get('RECIPE_DB_USERNAME'),
         password: configService.get('RECIPE_DB_PASSWORD'),
         database: configService.get('RECIPE_DB_NAME'),
-        entities: [__dirname + './*.entity{.ts,.js}'],
+        entities: [__dirname + './**/*.entity{.ts,.js}'],
         autoLoadEntities: true,
         synchronize: true,
         logging: false,
@@ -66,7 +66,7 @@ import { Recipe } from './recipe.entity';
     TypeOrmModule.forFeature([Recipe]),
     JwtModule,
   ],
-  controllers: [AppController, GrpcController],
-  providers: [AppService, JwtStrategy, GrpcService],
+  controllers: [RecipesController, RecipesGrpcController],
+  providers: [RecipesService, JwtStrategy, RecipesGrpcService],
 })
 export class AppModule {}

@@ -5,19 +5,19 @@ import { Logger } from '@nestjs/common/services';
 import { ClientGrpc, ClientKafka, ClientProxy } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ClientPackageNames } from './package-names.enum';
-import { Recipe } from './recipe.entity';
-import { RecipesDTO } from './recipes.dto';
+import { Recipe } from '../entities/recipe.entity';
+import { RecipesDTO } from '../recipes.dto';
+import { ClientPackageNames } from '../recipes.enum';
 import {
+  IngredientsService,
   AddRecipeData,
-  IIngredient,
-  IngredientsService as IngredientsService,
-  IRecipe,
   UserType,
-} from './recipes.interface';
+  IIngredient,
+  IRecipe,
+} from '../recipes.interface';
 
 @Injectable()
-export class AppService implements OnModuleInit {
+export class RecipesService implements OnModuleInit {
   private ingredientsService: IngredientsService;
   private logger = new Logger('RecipesService');
 

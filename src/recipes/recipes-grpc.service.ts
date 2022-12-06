@@ -2,12 +2,12 @@ import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc, ClientProxy } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ClientPackageNames } from './package-names.enum';
-import { Recipe } from './recipe.entity';
-import { IngredientsService, IRecipe } from './recipes.interface';
+import { Recipe } from '../entities/recipe.entity';
+import { ClientPackageNames } from '../recipes.enum';
+import { IngredientsService, IRecipe } from '../recipes.interface';
 
 @Injectable()
-export class GrpcService implements OnModuleInit {
+export class RecipesGrpcService implements OnModuleInit {
   private ingredientsService: IngredientsService;
   private logger = new Logger('RecipesService');
 
