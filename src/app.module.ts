@@ -56,7 +56,7 @@ import { RecipesGrpcService } from './recipes/recipes-grpc.service';
         username: configService.get('RECIPE_DB_USERNAME'),
         password: configService.get('RECIPE_DB_PASSWORD'),
         database: configService.get('RECIPE_DB_NAME'),
-        entities: [__dirname + './**/*.entity{.ts,.js}'],
+        entities: [__dirname + './entities/*.entity{.ts,.js}'],
         autoLoadEntities: true,
         synchronize: true,
         logging: false,
