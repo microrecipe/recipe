@@ -34,6 +34,7 @@ export class IngredientsDTO {
     res.name = ingredient.name;
     res.quantity = ingredient.quantity;
     res.unit = ingredient.unit;
+    res.price = ingredient.price;
     res.nutritions = ingredient.nutritions
       ? ingredient.nutritions.map((nutrition) => NutritionsDTO.toDTO(nutrition))
       : [];
@@ -46,6 +47,7 @@ export class IngredientsDTO {
   quantity: number;
   unit: string;
   nutritions: NutritionsDTO[];
+  price: number;
 }
 
 export class RecipesDTO {

@@ -12,6 +12,7 @@ export interface IIngredient {
   name?: string;
   quantity?: number;
   unit?: string;
+  price?: number;
   nutritions?: INutrition[];
   recipeId?: number;
 }
