@@ -27,7 +27,7 @@ export class Recipe {
   userId: number;
 
   @CreateDateColumn({ name: 'created_at' })
-  createAt: Date;
+  createdAt: Date;
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;

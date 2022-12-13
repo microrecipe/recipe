@@ -77,7 +77,11 @@ export class RecipesService implements OnModuleInit {
   }
 
   async listRecipes(): Promise<RecipesDTO[]> {
-    const recipes = await this.recipesRepository.find();
+    const recipes = await this.recipesRepository.find({
+      order: {
+        createdAt: 'DESC',
+      },
+    });
 
     const recipesList: IRecipe[] = [];
 
